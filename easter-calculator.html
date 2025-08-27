@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easter Date Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: TOKYO2020 VIE, Barlow, Montserrat, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .algorithm-name {
+            color: #764ba2;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="radio"] {
+            margin: 0;
+            transform: scale(1.2);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #a8e6cf 0%, #88d8a3 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-title {
+            color: #2d5a41;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result-date {
+            color: #1a3d2e;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-details {
+            color: #2d5a41;
+            font-size: 0.9em;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ffb3ba 0%, #ff9aa2 100%);
+            color: #d8000c;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .info-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Easter Date Calculator</h1>
+            <div class="subtitle">Calculate Easter Sunday dates</div>
+            <div class="algorithm-name">Using Gaussian Algorithm</div>
+        </div>
+
+        <form id="easterForm">
+            <div class="input-group">
+                <label for="year">Year:</label>
+                <input type="number" id="year" min="1" max="9999" value="2024" required>
+            </div>
+
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="catholic" name="calendar" value="true" checked>
+                    <label for="catholic">Catholic/Western</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="orthodox" name="calendar" value="false">
+                    <label for="orthodox">Orthodox/Eastern</label>
+                </div>
+            </div>
+
+            <button type="submit" class="calculate-btn">Calculate Easter Date</button>
+        </form>
+
+        <div id="result" class="result">
+            <div class="result-title">Easter Sunday</div>
+            <div id="resultDate" class="result-date"></div>
+            <div id="resultDetails" class="result-details"></div>
+        </div>
+
+        <div id="error" class="error"></div>
+
+        <div class="info-section">
+            <div class="info-title">About the Algorithm</div>
+            <div class="info-text">
+                This calculator uses the Gaussian Algorithm to compute Easter dates. Catholic Easter follows the Gregorian calendar (since 1583), while Orthodox Easter uses the Julian calendar system. The algorithm accounts for the complex lunar and solar cycles that determine Easter's date.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gaussian Algorithm for Easter calculation (converted from Python)
+        function easter(year, calendar = true) {
+            const a = year % 19;
+            const b = year % 4;
+            const c = year % 7;
+            
+            let m, n;
+            if (calendar) { // Catholic Easter (Julian before 1583, Catholic since 1583)
+                const k = Math.floor(year / 100);
+                const p = Math.floor((13 + 8 * k) / 25);
+                const q = Math.floor(k / 4);
+                m = year > 1582 ? (15 - p + k - q) % 30 : 15;
+                n = year > 1582 ? (4 + k - q) % 7 : 6;
+            } else { // Orthodox (Julian Easter)
+                m = 15;
+                n = 6;
+            }
+            
+            let d = (19 * a + m) % 30;
+            if ((d === 28 && a > 10) || d === 29) {
+                d -= 1;
+            }
+            
+            const e = (2 * b + 4 * c + 6 * d + n) % 7;
+            
+            // Gregorian-Julian date difference
+            const j = (year > 1582 && !calendar) ? Math.floor(year / 100) - Math.floor(year / 400) - 2 : 0;
+            
+            let easterDate;
+            if (d + e > 9) {
+                easterDate = new Date(year, 3, d + e - 9); // April (month 3 in JS)
+            } else {
+                easterDate = new Date(year, 2, d + e + 22); // March (month 2 in JS)
+            }
+            
+            // Add Julian offset
+            easterDate.setDate(easterDate.getDate() + j);
+            
+            return easterDate;
+        }
+
+        function formatDate(date) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function getDayOfYear(date) {
+            const start = new Date(date.getFullYear(), 0, 0);
+            const diff = date - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            return Math.floor(diff / oneDay);
+        }
+
+        document.getElementById('easterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const yearInput = document.getElementById('year');
+            const year = parseInt(yearInput.value);
+            const calendar = document.querySelector('input[name="calendar"]:checked').value === 'true';
+            
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            
+            // Hide previous results
+            resultDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            try {
+                if (year < 1 || year > 9999) {
+                    throw new Error('Please enter a year between 1 and 9999');
+                }
+                
+                const easterDate = easter(year, calendar);
+                const calendarType = calendar ? 'Catholic/Western' : 'Orthodox/Eastern';
+                const dayOfYear = getDayOfYear(easterDate);
+                
+                document.getElementById('resultDate').textContent = formatDate(easterDate);
+                document.getElementById('resultDetails').textContent = 
+                    `${calendarType} Easter • Day ${dayOfYear} of ${year}`;
+                
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Calculate for current year on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentYear = new Date().getFullYear();
+            document.getElementById('year').value = currentYear;
+            document.getElementById('easterForm').dispatchEvent(new Event('submit'));
+        });
+    </script>
+</body>
+</html>
